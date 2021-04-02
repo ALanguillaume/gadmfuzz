@@ -1,12 +1,27 @@
 Package: gadmfuzz
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Find Best Matching Name 
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: 
+    person(given = "Antoine",
+           family = "Languillaume",
+           role = c("aut", "cre"),
+           email = "antoinelanguillaume@gmail.com")
+Description: Functions to perform fuzzy matching on GADM administrative names.
+    Useful when working with data reported at any admistrative unit level. Especially
+    in contries not using the roman alphabet.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
+Imports: 
+    purrr,
+    dplyr,
+    stringdist,
+    stringi,
+    stringr
