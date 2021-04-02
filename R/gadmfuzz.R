@@ -54,12 +54,15 @@ filter_best_match <- function(dist_table_df) {
 #' @importFrom sf st_drop_geometry
 #' @importFrom purrr map map_dfr map2_dfr
 #' @export
-find_best_match <- function(gadm_sf, gadm_id_subregion,
-                                  gadm_entries_list, subregion_names) {
+find_best_match <- function(gadm_sf, subregion_names) {
 
   gadm <- sf::st_drop_geometry(gadm_sf)
+  gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
+
+  gadm_id_subregion <- paste0("GID_", determine_level_gadm(gadm))
+
   gadm$dist_table <-
-    purrr::map(gadm[[gadm_entries_list]],
+    purrr::map(gadm[["all_NAMEs"]],
                function(gadm_entries) {
                  purrr::map_dfr(subregion_names,
                                 fuzzy_string_match,
