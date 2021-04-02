@@ -6,7 +6,7 @@ to_Latin_ASCII <- function(string) {
 
 #' Identify level of gadm polygon
 #' @param gadm_country [sf object] gadm polygon geometries for a given country.
-#' @return [integer] 0, 1 or 2
+#' @return [integer] 0, 1 or 2, representing level of the gadm polygon.
 #' @importFrom stringr str_extract
 determine_level_gadm <- function(gadm_country) {
   NAME_X <- grep("^NAME_\\d$", names(gadm_country), value = TRUE)
@@ -14,15 +14,16 @@ determine_level_gadm <- function(gadm_country) {
   return(level_gadm)
 }
 
-#' Get all english spellings of a given gadm polygon regions
+#' Get all English spellings of a given gadm polygon regions
 #' @param gadm_country A sf object holding geometries for a given gadm country.
 #' @importFrom purrr map reduce
+#' @export
 get_all_english_spellings <- function(gadm_country) {
   level_gadm <- determine_level_gadm(gadm_country)
   subregion_name_cols <- paste0(c("NAME_", "VARNAME_"), level_gadm)
   target_cols <- gadm_country[, subregion_name_cols, drop = TRUE]
   target_cols <- purrr::map(target_cols, to_Latin_ASCII)
-  combined_vector <- purrr::reduce(function(x, y) paste(x, y, sep = "|"), target_cols)
+  combined_vector <- purrr::reduce(target_cols, function(x, y) paste(x, y, sep = "|"))
   combined_list <- strsplit(combined_vector, "\\|")
   return(combined_list)
 }
@@ -41,7 +42,7 @@ fuzzy_string_match <- function(national_stats, gadm) {
 
 #' @importFrom dplyr group_by filter ungroup
 #' @importFrom purrr map
-find_best_match <- function(dist_table_df) {
+filter_best_match <- function(dist_table_df) {
   dist_table_by_ns <- dplyr::group_by(dist_table_df, national_stats)
   best_matches <- dplyr::filter(dist_table_by_ns, dist == min(dist))
   best_matches <- dplyr::ungroup(best_matches)
@@ -52,7 +53,8 @@ find_best_match <- function(dist_table_df) {
 
 #' @importFrom sf st_drop_geometry
 #' @importFrom purrr map map_dfr map2_dfr
-match_subregion_names <- function(gadm_sf, gadm_id_subregion,
+#' @export
+find_best_match <- function(gadm_sf, gadm_id_subregion,
                                   gadm_entries_list, subregion_names) {
 
   gadm <- sf::st_drop_geometry(gadm_sf)
@@ -69,6 +71,6 @@ match_subregion_names <- function(gadm_sf, gadm_id_subregion,
                       dist_table[["id_subregion"]] <- id_subregion
                       return(dist_table)
                     })
-  best_matches <- find_best_match(dist_table_df)
+  best_matches <- filter_best_match(dist_table_df)
   return(best_matches)
 }

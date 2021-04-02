@@ -2,7 +2,7 @@
 % Please edit documentation in R/gadmfuzz.R
 \name{get_all_english_spellings}
 \alias{get_all_english_spellings}
-\title{Get all english spellings of a given gadm polygon regions}
+\title{Get all English spellings of a given gadm polygon regions}
 \usage{
 get_all_english_spellings(gadm_country)
 }
@@ -10,5 +10,5 @@ get_all_english_spellings(gadm_country)
 \item{gadm_country}{A sf object holding geometries for a given gadm country.}
 }
 \description{
-Get all english spellings of a given gadm polygon regions
+Get all English spellings of a given gadm polygon regions
 }

@@ -10,7 +10,7 @@ determine_level_gadm(gadm_country)
 \item{gadm_country}{[sf object] gadm polygon geometries for a given country.}
 }
 \value{
-[integer] 0, 1 or 2
+[integer] 0, 1 or 2, representing level of the gadm polygon.
 }
 \description{
 Identify level of gadm polygon
