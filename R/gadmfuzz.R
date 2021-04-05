@@ -28,13 +28,18 @@ get_all_english_spellings <- function(gadm_country) {
   return(combined_list)
 }
 
+# Sane default version of expand.grid()
+expand_grid <- function(...) {
+  expand.grid(..., KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+}
+
 #' Perform fuzzy string
 #' @import stringdist stringdist
 #' @importFrom purrr map_dfr
 fuzzy_string_match <- function(national_stats, gadm) {
-  df_dist <- expand.grid(national_stats = national_stats, gadm = gadm)
-  df_dist$dist <- stringdist::stringdist(df_dist$national_stats, df_dist$gadm,
-                                         method = "jw")
+  df_dist <- expand_grid(national_stats = national_stats, gadm = gadm)
+  df_dist[["dist"]] <- stringdist::stringdist(df_dist$national_stats, df_dist$gadm,
+                                              method = "jw")
   l_df_dist <- split(df_dist, df_dist$gadm)
   df_dist_match <- purrr::map_dfr(l_df_dist, ~ .x[which.min(.x$dist), ])
   return(df_dist_match)
