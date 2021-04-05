@@ -36,7 +36,7 @@ expand_grid <- function(...) {
 #' Perform fuzzy string
 #' @import stringdist stringdist
 #' @importFrom purrr map_dfr
-fuzzy_string_match <- function(national_stats, gadm) {
+fuzzy_string_match_core <- function(national_stats, gadm) {
   df_dist <- expand_grid(national_stats = national_stats, gadm = gadm)
   df_dist[["dist"]] <- stringdist::stringdist(df_dist$national_stats, df_dist$gadm,
                                               method = "jw")
@@ -44,6 +44,34 @@ fuzzy_string_match <- function(national_stats, gadm) {
   df_dist_match <- purrr::map_dfr(l_df_dist, ~ .x[which.min(.x$dist), ])
   return(df_dist_match)
 }
+
+
+#' For a given entry perform fuzzy string matching against all subregion names
+#'
+#' @param gadm_entrie [character vector]
+#' @param subregion_names
+#'
+#' @return A data.frame of with number of rows equals to
+#' `length(gadm_entrie) x length(subregion_names)` containing the fuzzy string matching
+#' scores.
+#'
+#' @importFrom purrr map_dfr
+compare_gadm_entrie_with_subregion_names <- function(gadm_entrie, subregion_names) {
+  purrr::map_dfr(subregion_names,
+                 ~ fuzzy_string_match_core(national_stats = .x, gadm_entrie))
+}
+
+
+#' @importFrom purrr map2_dfr
+add_corresponding_GID <- function(gadm) {
+  gadm_id_subregion <- paste0("GID_", determine_level_gadm(gadm))
+  dist_table_df <- purrr::map2_dfr(gadm[["dist_table"]], gadm[[gadm_id_subregion]],
+                    function(dist_table, id_subregion) {
+                      dist_table[["id_subregion"]] <- id_subregion
+                      return(dist_table)})
+  return(dist_table_df)
+}
+
 
 #' @importFrom dplyr group_by filter ungroup
 #' @importFrom purrr map
@@ -56,31 +84,20 @@ filter_best_match <- function(dist_table_df) {
   return(best_matches)
 }
 
-add_corresponding_GID <- function(gadm) {
-  gadm_id_subregion <- paste0("GID_", determine_level_gadm(gadm))
-  dist_table_df <- purrr::map2_dfr(gadm$dist_table, gadm[[gadm_id_subregion]],
-                    function(dist_table, id_subregion) {
-                      dist_table[["id_subregion"]] <- id_subregion
-                      return(dist_table)})
-  return(dist_table_df)
-}
 
 #' @importFrom sf st_drop_geometry
 #' @importFrom purrr map map_dfr map2_dfr
 #' @export
 find_best_match <- function(gadm_sf, subregion_names) {
-
   gadm <- sf::st_drop_geometry(gadm_sf)
   gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
-
-
+  # Iterate through each possible spelling of a gadm subregion.
+  # Results are stored into a list column.
+  # Each element of that list column is a data.frame containing fuzzy match scores.
   gadm$dist_table <-
     purrr::map(gadm[["all_NAMEs"]],
-               function(gadm_entries) {
-                 purrr::map_dfr(subregion_names,
-                                fuzzy_string_match,
-                                gadm_entries)
-               })
+               ~ compare_gadm_entrie_with_subregion_names(gadm_entrie = .x,
+                                                          subregion_names))
   dist_table_df <- add_corresponding_GID(gadm)
   best_matches <- filter_best_match(dist_table_df)
   return(best_matches)

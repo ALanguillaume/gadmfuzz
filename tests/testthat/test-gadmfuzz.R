@@ -6,8 +6,8 @@ test_that("fuzzy match core", {
     dist = c(1/3, 1/9, 1/3),
     stringsAsFactors = FALSE
   )
-  dist_table <- fuzzy_string_match(c("baba", "coucou", "kuku"),
-                                   c("bobo", "kiki", "coco"))
+  dist_table <- fuzzy_string_match_core(c("baba", "coucou", "kuku"),
+                                        c("bobo", "kiki", "coco"))
   expect_equal(dist_table, expected_results)
 })
 
