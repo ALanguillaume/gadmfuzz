@@ -4,7 +4,7 @@
 \alias{fuzzy_string_match_core}
 \title{Perform fuzzy string}
 \usage{
-fuzzy_string_match_core(national_stats, gadm)
+fuzzy_string_match_core(regional_stats, gadm)
 }
 \description{
 Perform fuzzy string

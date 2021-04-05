@@ -4,7 +4,7 @@
 \alias{determine_level_gadm}
 \title{Identify level of gadm polygon}
 \usage{
-determine_level_gadm(gadm_country)
+determine_level_gadm(gadm_country_sf)
 }
 \arguments{
 \item{gadm_country}{[sf object] gadm polygon geometries for a given country.}

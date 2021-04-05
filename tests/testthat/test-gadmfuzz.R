@@ -1,7 +1,7 @@
 
 test_that("fuzzy match core", {
   expected_results <- data.frame(
-    national_stats = c("baba", "coucou", "kuku"),
+    regional_stats = c("baba", "coucou", "kuku"),
     gadm = c("bobo", "coco", "kiki"),
     dist = c(1/3, 1/9, 1/3),
     stringsAsFactors = FALSE
@@ -13,12 +13,12 @@ test_that("fuzzy match core", {
 
 test_that("EGY", {
   egy_governorates <- unique(wheat_egypt$governorate)
-  best_matches <- find_best_match(gadm_sf = EGY,
-                                  subregion_names = egy_governorates)
+  best_matches <- find_best_match(region_names = egy_governorates,
+                                  gadm_country_sf = EGY)
   expect_snapshot(best_matches)
 })
 
 test_that("Detect proper gadm level", {
-  level <- determine_level_gadm(gadm_country = EGY)
+  level <- determine_level_gadm(gadm_country_sf = EGY)
   expect_identical(level, 1L)
 })

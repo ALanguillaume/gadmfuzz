@@ -4,7 +4,7 @@
 \alias{get_all_english_spellings}
 \title{Get all English spellings of a given gadm polygon regions}
 \usage{
-get_all_english_spellings(gadm_country)
+get_all_english_spellings(gadm_country_sf)
 }
 \arguments{
 \item{gadm_country}{A sf object holding geometries for a given gadm country.}
