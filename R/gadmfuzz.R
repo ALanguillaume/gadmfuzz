@@ -51,6 +51,15 @@ filter_best_match <- function(dist_table_df) {
   return(best_matches)
 }
 
+add_corresponding_GID <- function(gadm) {
+  gadm_id_subregion <- paste0("GID_", determine_level_gadm(gadm))
+  dist_table_df <- purrr::map2_dfr(gadm$dist_table, gadm[[gadm_id_subregion]],
+                    function(dist_table, id_subregion) {
+                      dist_table[["id_subregion"]] <- id_subregion
+                      return(dist_table)})
+  return(dist_table_df)
+}
+
 #' @importFrom sf st_drop_geometry
 #' @importFrom purrr map map_dfr map2_dfr
 #' @export
@@ -59,7 +68,6 @@ find_best_match <- function(gadm_sf, subregion_names) {
   gadm <- sf::st_drop_geometry(gadm_sf)
   gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
 
-  gadm_id_subregion <- paste0("GID_", determine_level_gadm(gadm))
 
   gadm$dist_table <-
     purrr::map(gadm[["all_NAMEs"]],
@@ -68,12 +76,7 @@ find_best_match <- function(gadm_sf, subregion_names) {
                                 fuzzy_string_match,
                                 gadm_entries)
                })
-  dist_table_df <-
-    purrr::map2_dfr(gadm$dist_table, gadm[[gadm_id_subregion]],
-                    function(dist_table, id_subregion) {
-                      dist_table[["id_subregion"]] <- id_subregion
-                      return(dist_table)
-                    })
+  dist_table_df <- add_corresponding_GID(gadm)
   best_matches <- filter_best_match(dist_table_df)
   return(best_matches)
 }
