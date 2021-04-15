@@ -57,18 +57,32 @@ fuzzy_string_match_core <- function(regional_stats, gadm) {
 #'
 #' @importFrom purrr map_dfr
 compare_gadm_entrie_with_region_names <- function(gadm_entrie, region_names) {
-  purrr::map_dfr(region_names,
-                 ~ fuzzy_string_match_core(regional_stats = .x, gadm_entrie))
+  dist_table_df <- purrr::map_dfr(region_names,
+                                  ~ fuzzy_string_match_core(regional_stats = .x,
+                                                            gadm_entrie))
+  return(dist_table_df)
 }
 
+# Iterate through each possible spelling of a gadm subregion.
+# Results are stored into a list column.
+# Each element of that list column is a data.frame containing fuzzy match scores.
+fuzzy_match_over_gadm_entries <- function(region_names, gadm_country_sf) {
+  gadm <- sf::st_drop_geometry(gadm_country_sf)
+  gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
+  l_dist_table_df <- purrr::map(gadm[["all_NAMEs"]],
+                                ~ compare_gadm_entrie_with_region_names(gadm_entrie = .x,
+                                                                        region_names))
+  gadm$dist_table <- l_dist_table_df
+  return(gadm)
+}
 
 #' @importFrom purrr map2_dfr
 add_corresponding_GID <- function(gadm) {
   gadm_id_region <- paste0("GID_", determine_level_gadm(gadm))
   dist_table_df <- purrr::map2_dfr(gadm[["dist_table"]], gadm[[gadm_id_region]],
-                    function(dist_table, id_region) {
-                      dist_table[["id_region"]] <- id_region
-                      return(dist_table)})
+                                   function(dist_table, id_region) {
+                                     dist_table[["id_region"]] <- id_region
+                                     return(dist_table)})
   return(dist_table_df)
 }
 
@@ -89,15 +103,7 @@ filter_best_match <- function(dist_table_df) {
 #' @importFrom purrr map map_dfr map2_dfr
 #' @export
 find_best_match <- function(region_names, gadm_country_sf) {
-  gadm <- sf::st_drop_geometry(gadm_country_sf)
-  gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
-  # Iterate through each possible spelling of a gadm subregion.
-  # Results are stored into a list column.
-  # Each element of that list column is a data.frame containing fuzzy match scores.
-  gadm$dist_table <-
-    purrr::map(gadm[["all_NAMEs"]],
-               ~ compare_gadm_entrie_with_region_names(gadm_entrie = .x,
-                                                          region_names))
+  gadm <- fuzzy_match_over_gadm_entries(region_names, gadm_country_sf)
   dist_table_df <- add_corresponding_GID(gadm)
   best_matches <- filter_best_match(dist_table_df)
   return(best_matches)
