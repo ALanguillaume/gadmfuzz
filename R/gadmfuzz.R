@@ -66,6 +66,8 @@ compare_gadm_entrie_with_region_names <- function(gadm_entrie, region_names) {
 # Iterate through each possible spelling of a gadm subregion.
 # Results are stored into a list column.
 # Each element of that list column is a data.frame containing fuzzy match scores.
+#' @importFrom sf st_drop_geometry
+#' @importFrom purrr map
 fuzzy_match_over_gadm_entries <- function(region_names, gadm_country_sf) {
   gadm <- sf::st_drop_geometry(gadm_country_sf)
   gadm[["all_NAMEs"]] <- get_all_english_spellings(gadm)
@@ -99,8 +101,6 @@ filter_best_match <- function(dist_table_df) {
 }
 
 
-#' @importFrom sf st_drop_geometry
-#' @importFrom purrr map map_dfr map2_dfr
 #' @export
 find_best_match <- function(region_names, gadm_country_sf) {
   gadm <- fuzzy_match_over_gadm_entries(region_names, gadm_country_sf)
