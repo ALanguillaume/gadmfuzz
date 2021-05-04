@@ -1,0 +1,59 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# gadmfuzz
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `{gadmfuzz}` is to match [GADM](https://gadm.org/index.html) polygon entries with local region names provided in other data sets. It does so using fuzzy string matching. It is especially useful for countries not using the latin alphabet for which GADM provides a list of possible transliterated English spellings.
+
+> !!WIP!!: This is very much Work in Progress and still needs to be tested and documented properly.
+
+## Installation
+
+```{r, eval=FALSE}
+remotes::install_github("ALanguillaume/gadmfuzz")
+```
+
+## Example
+
+```{r example}
+library(gadmfuzz)
+```
+
+Let's take Egypt as an example. Governorate names can have a fair number of different spellings when transliterated to English. GADM provides a whole bunch of them:
+
+```{r}
+head(gadm36_EGY_1_sf[["VARNAME_1"]])
+```
+
+...But how to match those with a particular entry of the wheat yield data set you have ?
+
+```{r}
+(egy_governorates <- unique(gadmfuzz::wheat_egypt$governorate))
+```
+
+Use ` gadmfuzz::find_best_match()` to find out:
+
+```{r}
+best_matches <- gadmfuzz::find_best_match(region_names = egy_governorates,
+                                          gadm_country_sf = EGY)
+```
+
+```{r}
+best_matches
+```
+

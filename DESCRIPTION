@@ -1,6 +1,6 @@
 Package: gadmfuzz
 Type: Package
-Title: Find Best Matching Name 
+Title: Match GADM polygon entries with local region names
 Version: 0.1.0
 Author: 
     person(given = "Antoine",
@@ -9,7 +9,7 @@ Author:
            email = "antoinelanguillaume@gmail.com")
 Description: Functions to perform fuzzy matching on GADM administrative names.
     Useful when working with data reported at any admistrative unit level. Especially
-    in contries not using the roman alphabet.
+    in countries not using the latin alphabet.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
