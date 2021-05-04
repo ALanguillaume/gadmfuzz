@@ -138,6 +138,11 @@ filter_best_match <- function(dist_table_df) {
 #'
 #' @export
 find_best_match <- function(region_names, gadm_country_sf) {
+  # TODO: Defensive programming checks
+  # * Check if region_name is of type character and contains unique entries
+  # * Validate gadm sf object:
+  #   - is sf objects
+  #   - contains at least column GID_1, NAME_1 and VARNAME_1
   gadm <- fuzzy_match_over_gadm_entries(region_names, gadm_country_sf)
   dist_table_df <- add_corresponding_GID(gadm)
   best_matches <- filter_best_match(dist_table_df)
