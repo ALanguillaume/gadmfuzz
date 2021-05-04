@@ -12,13 +12,13 @@ test_that("fuzzy match core", {
 })
 
 test_that("EGY", {
-  egy_governorates <- unique(wheat_egypt$governorate)
+  egy_governorates <- unique(wheat_yield_EGY$governorate)
   best_matches <- find_best_match(region_names = egy_governorates,
-                                  gadm_country_sf = EGY)
+                                  gadm_country_sf = gadm36_EGY_1_sf)
   expect_snapshot(best_matches)
 })
 
 test_that("Detect proper gadm level", {
-  level <- determine_level_gadm(gadm_country_sf = EGY)
+  level <- determine_level_gadm(gadm_country_sf = gadm36_EGY_1_sf)
   expect_identical(level, 1L)
 })
