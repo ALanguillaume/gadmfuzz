@@ -24,4 +24,5 @@ Imports:
     dplyr,
     stringdist,
     stringi,
-    stringr
+    stringr,
+    sf
