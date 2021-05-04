@@ -45,7 +45,7 @@ head(gadm36_EGY_1_sf[["VARNAME_1"]])
 set you have ?
 
 ``` r
-(egy_governorates <- unique(gadmfuzz::wheat_egypt$governorate))
+(egy_governorates <- unique(wheat_yield_EGY$governorate))
 #>  [1] "Alexandria"    "Behera"        "Gharbia"       "Kafr-Elsheikh"
 #>  [5] "Dakahlia"      "Damietta"      "Sharkia"       "Ismailia"     
 #>  [9] "Port Said"     "Suez"          "Menoufia"      "Qalyoubia"    
@@ -59,7 +59,7 @@ Use `gadmfuzz::find_best_match()` to find out:
 
 ``` r
 best_matches <- gadmfuzz::find_best_match(region_names = egy_governorates,
-                                          gadm_country_sf = EGY)
+                                          gadm_country_sf = gadm36_EGY_1_sf)
 ```
 
 ``` r

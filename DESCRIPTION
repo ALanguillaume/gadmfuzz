@@ -2,7 +2,7 @@ Package: gadmfuzz
 Type: Package
 Title: Match GADM polygon entries with local region names
 Version: 0.1.0
-Author: 
+Authors@R: 
     person(given = "Antoine",
            family = "Languillaume",
            role = c("aut", "cre"),
@@ -25,4 +25,6 @@ Imports:
     stringdist,
     stringi,
     stringr,
-    sf
+    sf,
+    rlang
+Roxygen: list(markdown = TRUE)

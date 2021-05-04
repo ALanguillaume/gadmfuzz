@@ -43,14 +43,14 @@ head(gadm36_EGY_1_sf[["VARNAME_1"]])
 ...But how to match those with a particular entry of the wheat yield data set you have ?
 
 ```{r}
-(egy_governorates <- unique(gadmfuzz::wheat_egypt$governorate))
+(egy_governorates <- unique(wheat_yield_EGY$governorate))
 ```
 
 Use ` gadmfuzz::find_best_match()` to find out:
 
 ```{r}
 best_matches <- gadmfuzz::find_best_match(region_names = egy_governorates,
-                                          gadm_country_sf = EGY)
+                                          gadm_country_sf = gadm36_EGY_1_sf)
 ```
 
 ```{r}

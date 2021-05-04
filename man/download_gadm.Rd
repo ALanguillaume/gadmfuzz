@@ -14,8 +14,10 @@ download_gadm(iso3, path, level = 0)
 \item{level}{A integer (0, 1, or 2), corresponding to the gadm level:
 0 corresponds to country borders while 1 and 2 correspond to administrative units
 within the country:
-* 1 to biggest administrative units for a given country.
-* 2 to smallest available administrative units for a given country.}
+\itemize{
+\item 1 to biggest administrative units for a given country.
+\item 2 to smallest available administrative units for a given country.
+}}
 }
 \description{
 Download GADM country border polygons, by default at highest scale possible,
